@@ -5,6 +5,9 @@
 - Tables: FactSalesDetail at order-line grain, DimDate, DimProduct, DimCustomer, DimTerritory, SalesHeader.
 - Tools: SQL Server, Power Query, Power BI Desktop, DAX measures, Drillthrough navigation.
 
+### Data Model (Star Schema)
+![Star schema](05-Screenshots/Sales-StarSchema.png)
+
 ## Page 1 – Sales Overview
 **Purpose:** Revenue, order volume, and AOV trends across 2011–2014.
 
@@ -55,6 +58,7 @@
 
 ## Files
 - AdventureWorks_Sales.pbix
+- [AdventureWorks_Sales.pbix](03-PowerBI/AdventureWorks_Sales.pbix)
 
 ## Implementation Notes
 - Star schema with automatic drillthrough filtering
@@ -66,6 +70,8 @@
 ## SQL Layer
 
 ## SQL Queries and Supported Visuals
+- [SQL queries](01-SQL-Queries/)
+- [SQL outputs](02-SQL-Outputs/)
 
 1. **01_yoy_sales_by_year.sql**  
    - **Page:** Sales Overview  
