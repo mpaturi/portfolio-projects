@@ -9,7 +9,7 @@
 **Purpose:** Revenue, order volume, and AOV trends across 2011–2014.
 
 ### Page 1 – Sales Overview
-![Sales Overview](../05-Screenshots/OverviewPage.png) 
+![Sales Overview](05-Screenshots/OverviewPage.png) 
 
 **Key findings**
 - Sales grow strongly from 2011 and peak in 2013, then drop sharply in 2014, which is only a partial year; as a result both Total Sales and YOY Sales % are much lower than 2013.
@@ -22,7 +22,7 @@
 **Purpose:** Break down sales and average order value by territory and product line to show where revenue and basket size are strongest.
 
 ### Page 2 – Sales Analysis
-![Sales Analysis](../05-Screenshots/SalesAnalysis.png)
+![Sales Analysis](05-Screenshots/SalesAnalysis.png)
 
 **Key findings**
 - Southwest and Northwest are the largest territories by Total Sales, with several other regions (e.g., Canada, Central) forming a strong second tier.
@@ -34,7 +34,7 @@
 **Purpose:** Deep dive into single territory performance with 2012-2013 focus.
 
 ### Page 3 – Territory Details (Drillthrough)
-![Territory Details](../05-Screenshots/TerritoryDetails.png)
+![Territory Details](05-Screenshots/TerritoryDetails.png)
 
 **Key visuals & insights:**
 - **Gauge**: 2013 sales vs 2012 target (territory-specific performance)
