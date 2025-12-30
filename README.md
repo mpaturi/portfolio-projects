@@ -57,7 +57,6 @@
 - **Average Order Value (AOV)** – Total Sales ÷ Order Count (average revenue per order).
 
 ## Files
-- AdventureWorks_Sales.pbix
 - [AdventureWorks_Sales.pbix](03-PowerBI/AdventureWorks_Sales.pbix)
 
 ## Implementation Notes
