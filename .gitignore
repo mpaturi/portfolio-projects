@@ -1,6 +1,9 @@
-venv/
-.venv/
-__pycache__/
-.ipynb_checkpoints/
+# Ignore venv only in this project
+Project2-AdventureWorks-SQL/.venv/
+
+# General Python/Jupyter ignores
+**/__pycache__/
+**/.ipynb_checkpoints/
 .env
+
 
