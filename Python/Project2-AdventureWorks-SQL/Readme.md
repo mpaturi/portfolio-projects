@@ -12,6 +12,25 @@ This project performs comprehensive SQL-based data extraction and exploratory da
 
 ---
 
+## 📊 Sample Visualizations
+
+### Monthly Revenue Trends
+![Monthly Revenue Analysis](images/monthly_revenue_trend.png)
+*Top 10 revenue-generating months with cumulative sales trend (2011-2014)*
+
+### Product Performance Analysis
+![Product Performance](images/product_performance.png)
+*Top 5 products by revenue and sales tier distribution*
+
+### Territory Comparison
+![Territory Analysis](images/territory_comparison.png)
+*Territory performance: Total sales vs. average order value*
+
+### Sesonal Category Insights
+![Seasonal Insights](images/seasonal_category_insights.png)
+*Seasonal performance: Revenue and Order Count by seasons*
+
+
 ## Project Structure
 Project2-AdventureWorks-SQL/
 ├── notebooks/
