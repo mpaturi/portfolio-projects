@@ -194,27 +194,27 @@ Target accessories/clothing sales during off-season months
 
 Data Dictionary
 Core Tables Used
-SalesOrderHeader: Order-level information
-SalesOrderID: Unique order identifier
-OrderDate: Date order was placed
-SubTotal: Pre-tax order amount
-Status: Order status (5 = Shipped, 6 = Cancelled)
-TerritoryID: Geographic territory
+- SalesOrderHeader: Order-level information
+- SalesOrderID: Unique order identifier
+- OrderDate: Date order was placed
+- SubTotal: Pre-tax order amount
+- Status: Order status (5 = Shipped, 6 = Cancelled)
+- TerritoryID: Geographic territory
 
 SalesOrderDetail: Line-item details
-SalesOrderDetailID: Unique line item identifier
-ProductID: Product identifier
-OrderQty: Quantity ordered
-UnitPrice: Price per unit
-LineTotal: Total for line item (qty × price)
+- SalesOrderDetailID: Unique line item identifier
+- ProductID: Product identifier
+- OrderQty: Quantity ordered
+- UnitPrice: Price per unit
+- LineTotal: Total for line item (qty × price)
 
 Product / ProductCategory / ProductSubcategory: Product hierarchy
 Name: Product, category, or subcategory name
-ProductCategoryID, ProductSubcategoryID: Hierarchy links
+- ProductCategoryID, ProductSubcategoryID: Hierarchy links
 
 SalesTerritory: Geographic information
 TerritoryID: Territory identifier
-Name: Territory name (e.g., "Southwest", "Canada")
+- Name: Territory name (e.g., "Southwest", "Canada")
 
 
 
