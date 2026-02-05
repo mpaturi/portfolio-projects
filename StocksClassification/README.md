@@ -68,9 +68,9 @@ A Logistic Regression model using the engineered features achieves test accuracy
 A confusion matrix for the test set shows very few true negatives and many false positives (down days predicted as up), confirming that the model is aggressive in predicting “up” and often wrong on down days.
 
 
-![Logistic Regression](/reports/figures/lr_test_metrics.png)
+![Logistic Regression](reports/figures/lr_test_metrics.png)
 
-![Confusion Matrix](/reports/figures/confusion_matrix_lr_test.png)
+![Confusion Matrix](reports/figures/confusion_matrix_lr_test.png)
 
 
 ## Key findings
