@@ -1,4 +1,6 @@
 -- 04_product_margin_by_territory.sql
+-- Business Question: Which products deliver the highest gross margins in each territory?
+-- Key Insight: Mountain bikes consistently show 15-20% margins, while some Road bikes show negative margins
 -- Supports: Top Products w/ Gross Margin % table and margin analysis
 
 WITH ProductTerritorySales AS (

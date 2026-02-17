@@ -1,23 +1,36 @@
 # AdventureWorks Sales Dashboard (2011–2014)
 
+## Project Overview
+
+An end-to-end sales analytics solution for AdventureWorks (2011–2014) demonstrating modern BI and AI integration:
+
+- **Data Layer:** Curated T-SQL queries surface year-over-year sales trends, monthly seasonality, territory performance, and product margins from SQL Server (AdventureWorksDW).
+- **Visualization Layer:** Power BI dashboard with executive KPI cards and interactive drill-downs by year, month, territory, and product.
+- **API Layer:** FastAPI service exposes `/kpis` and `/explain-kpis` endpoints for programmatic access to metrics.
+- **AI Layer:** LangChain + Ollama (local Llama 3.2 model) generates natural-language executive summaries from live sales data, making the dashboard insights consumable by downstream applications and LLMs.
+
+This project showcases SQL, Power BI, Python, FastAPI, and modern LLM integration in a production-style BI pipeline.
+
 ## Dataset and Model
 - Source: AdventureWorks OLTP (June 2011– June 2014) sales orders.
 - Tables: FactSalesDetail at order-line grain, DimDate, DimProduct, DimCustomer, DimTerritory, SalesHeader.
 - Tools: SQL Server, Power Query, Power BI Desktop, DAX measures, Drillthrough navigation.
+- End-to-end flow: Data is pulled from SQL Server (AdventureWorksDW) using curated T‑SQL queries, exported to clean views/tables, and then modeled in Power BI to power the executive Overview and detail pages.
 
 ### Data Model (Star Schema)
 ![Star schema](04-Screenshots/Sales-StarSchema.png)
 
 ## Page 1 – Sales Overview
-**Purpose:** Revenue, order volume, and AOV trends across 2011–2014.
+**Purpose:** Purpose: Give executives a quick view of revenue, order volume, and average order value trends from 2011–2014.
+Behind this page are curated SQL queries that calculate YoY sales and monthly trends, which feed the KPI cards and the two trend charts.
 
 ### Page 1 – Sales Overview
 ![Sales Overview](04-Screenshots/OverviewPage.png) 
 
 **Key findings**
-- Sales grow strongly from 2011 and peak in 2013, then drop sharply in 2014, which is only a partial year; as a result both Total Sales and YOY Sales % are much lower than 2013.
-- From 2011–2014 the business generates roughly ~$110M in revenue from about 31K orders, with an average order value of around ~$3.5K; the 2014 decline is driven by both fewer orders and smaller orders compared to 2013.
-- Monthly sales vary through the year with a clear peak around March, indicating an early-year demand spike followed by weaker months later in the year.
+- Sales grow from 2011 and peak in 2013, then drop sharply in partial year 2014, pulling down YoY growth.
+- From 2011–2014 the business generates roughly $110M in revenue from about 31K orders, with an average order value around $3.5K.
+- Monthly sales follow a clear seasonal pattern with an early‑year peak and weaker summer months, which informs staffing and campaign planning.
 - High-priced bikes (e.g., Mountain-200) dominate Total Sales, while accessories like Fender Set – Mountain lead in Gross Margin %, generating about 62% profit per dollar of revenue.
 - Southwest and a few other regions lead in Total Sales, and Average Order Value varies by region, suggesting regional differences in product mix and typical order size.
 
@@ -77,12 +90,14 @@
    - **Supports:**  
      - "YOY Sales % by Year" column chart  
      - YOY KPI cards (Total Sales, Total Sales PY, YOY Sales %)
+     - Built a YoY sales trend query so leadership can quickly see whether revenue is accelerating, flat, or declining.
 
 2. **02_total_sales_by_month_2011_2014.sql**  
    - **Page:** Sales Overview  
    - **Supports:**  
      - "Total Sales by Month" line chart  
      - Seasonal pattern used in narrative
+     - Built a monthly sales trend query so leadership can see seasonal patterns across years, compare each month to its history, and plan staffing and campaigns around predictable peaks and slowdowns.
 
 3. **03_sales_by_territory_and_rank.sql**  
    - **Page:** Sales Analysis  
@@ -109,3 +124,12 @@
      - "Quarterly Sales Comparison" clustered column chart (2012 vs 2013)  
      - 2012–2013 territory performance story
 
+## FastAPI KPIs service
+- Exposed a lightweight FastAPI app ('/kpis') that returns key sales KPIs as JSON:
+  - 'total_sales_2011_2014'
+  - 'yoy_sales_percent_by_year' (dict of year → YoY %)
+  - 'total_orders_2011_2014'
+- This makes the dashboard metrics consumable by other apps, scripts, or future AI/LLM components.
+- Added an `/explain-kpis` endpoint that returns an executive-ready narrative summary of the sales KPIs.
+- Designed the API to be LLM-ready so the current template-based summary can later be powered by a LangChain or other LLM call without changing the client interface.
+- Added an `/explain-kpis` endpoint that uses a local Llama 3.2 model via Ollama and LangChain to generate executive-ready narratives from sales KPIs, demonstrating AI integration in a BI pipeline.

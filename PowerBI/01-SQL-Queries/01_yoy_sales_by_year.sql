@@ -1,4 +1,6 @@
 -- 01_yoy_sales_by_year.sql
+-- Business Question: Is revenue growing or declining year-over-year?
+-- Key Insight: Revenue peaks in 2013, then drops sharply in partial 2014
 -- Supports Page 1: YOY Sales % by Year column chart and YOY KPI
 -- Uses LAG() to calculate prior-year sales and YoY %, feeding the Overview YOY chart.
 

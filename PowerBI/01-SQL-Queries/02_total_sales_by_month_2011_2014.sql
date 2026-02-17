@@ -1,4 +1,6 @@
 -- 02_total_sales_by_month_2011_2014.sql
+-- Business Question: What are the monthly sales patterns and seasonal trends across years?
+-- Key Insight: Sales show clear seasonality with peaks in early months and mid-year, weaker summer periods
 -- Supports Page 1: Total Sales by Month line chart (seasonality across years)
 
 SELECT 

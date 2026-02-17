@@ -1,8 +1,8 @@
 -- 05_top_products_by_sales_per_territory.sql
+-- Business Question: What are the best-selling products in each territory by revenue?
+-- Key Insight: Mountain-200 and Road-250 product families dominate across all territories
 -- Supports Page 3: Top Products by Sales (Territory) visual
 -- Returns the top product by TotalSales in each territory using ROW_NUMBER()
--- Uses ROW_NUMBER() to find the top product in each territory, supporting the 
---Territory Details Top Products visual.
 
 WITH TerritorySales AS (
     SELECT
