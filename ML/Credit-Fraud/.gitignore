@@ -16,7 +16,7 @@ ENV/
 .vscode/
 
 # Data files (uncomment if dataset is too large to upload)
-# data/*.csv
+data/*.csv
 
 # OS files
 .DS_Store
