@@ -18,15 +18,19 @@ The dataset contains transactions made by credit cards in September 2013 by Euro
 **Note:** The dataset file (`creditcard.csv`, 143 MB) is not included in this repository due to GitHub's file size limits. Download it from the Kaggle link above.
 
 ## Project Structure
-CREDITCARD/
+```
+Credit-Fraud/
 ├── data/
-│ └── creditcard.csv
+│ └── (dataset excluded - download from Kaggle)
 ├── images/
+│ └── (visualization outputs)
 ├── notebooks/
-│ └── CreditCardDefaulters.ipynb
-├── README.md
+│ └── creditcardfraud.ipynb
 ├── .gitignore
+├── LICENSE
+├── README.md
 └── requirements.txt
+```
 
 
 ## How to Run
