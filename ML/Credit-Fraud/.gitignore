@@ -27,7 +27,7 @@ Thumbs.db
 *.pkl
 *.h5
 *.joblib
-models/
+models/*.pkl
 
 # Reports and temp outputs
 *.log
