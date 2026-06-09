@@ -1,154 +1,238 @@
 # Credit Card Fraud Detection
 
-Exploratory data analysis and classification modeling on the highly imbalanced Credit Card Fraud Detection dataset from Kaggle, following a practical workflow for handling extreme class imbalance in fraud prediction.
+A machine learning project that explores fraud detection on a highly imbalanced credit card transaction dataset. The project focuses on handling extreme class imbalance, comparing multiple modeling strategies, and evaluating business trade-offs between catching fraud and minimizing false alarms.
+
+---
+
+## Project Goal
+
+Credit card fraud detection is a classic imbalanced classification problem:
+
+* Fraud transactions: ~0.17%
+* Legitimate transactions: ~99.83%
+
+Because fraud is extremely rare, accuracy is not a useful metric. Instead, the project focuses on:
+
+* Precision
+* Recall
+* F1-score
+* Precision-Recall (PR) Curve
+* ROC Curve
+
+The objective is to maximize fraud detection while keeping false-positive investigations manageable.
+
+---
 
 ## Tools & Libraries
 
-- Python 3.x
-- pandas, numpy
-- matplotlib, seaborn
-- scikit-learn
-- imbalanced-learn
-- xgboost
+* Python
+* Pandas
+* NumPy
+* Matplotlib
+* Seaborn
+* Scikit-Learn
+* Imbalanced-Learn (SMOTE)
+* XGBoost
+
+---
 
 ## Dataset
 
-[Credit Card Fraud Detection Dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) from Kaggle (Machine Learning Group - ULB).
+Kaggle Credit Card Fraud Detection Dataset:
 
-The dataset contains 284,807 transactions with 31 columns, and the target variable `Class` identifies fraud (`1`) vs non-fraud (`0`). Fraud cases make up only about 0.17% of the data, which makes this a severely imbalanced classification problem.
+https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
 
-**Note:** The dataset file (`creditcard.csv`, ~143 MB) is not included in this repository due to GitHub file size limits. Download it from the Kaggle link above.
+Dataset characteristics:
 
-## Project Structure
+* 284,807 transactions
+* 492 fraud transactions
+* 30 anonymized PCA-transformed features (V1–V28)
+* Amount
+* Class (Target)
 
-```text
-Credit-Fraud/
-├── data/
-│   └── (dataset excluded - download from Kaggle)
-├── images/
-│   └── (visualization outputs)
-├── models/
-│   ├── rf_importance.pkl
-│   ├── log_reg_orig.pkl
-│   ├── log_reg_smote.pkl
-│   ├── smote_data.pkl
-│   ├── rf_smote.pkl
-│   ├── xgb_smote.pkl
-│   └── rf_grid_search.pkl
-├── notebooks/
-│   └── creditcardfraud.ipynb
-├── .gitignore
-├── LICENSE
-├── README.md
-└── requirements.txt
-```
+Fraud prevalence:
 
-**Note:** Trained model files (`models/*.pkl`) are not included in this repository due to file size. Run the notebook to generate them — each model uses joblib caching so it only trains once and loads from disk on subsequent runs.
+0.172%
 
-## How to Run
+---
 
-1. Clone this repository.
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Download `creditcard.csv` from Kaggle and place it in the `data/` folder.
-4. Open the notebook:
-   ```bash
-   jupyter notebook notebooks/creditcardfraud.ipynb
-   ```
+## Project Workflow
 
-## Exploratory Analysis
+### 1. Exploratory Data Analysis
 
-Initial exploration confirmed that the dataset is extremely imbalanced, with about 99.83% non-fraud transactions and only about 0.17% fraud transactions. Because of this, accuracy alone is not a reliable metric, so the project focuses on fraud-class precision, recall, and F1-score instead.
+* Class distribution analysis
+* Fraud vs non-fraud comparison
+* Feature distribution visualization
+* Correlation analysis
 
-## Train-Test Setup
+### 2. Train-Test Split
 
-The train-test split was performed before any feature analysis or modeling, using stratification so both sets preserved the original class distribution. The test set was intentionally left imbalanced to reflect real-world fraud detection conditions and to ensure honest evaluation.
+A stratified train-test split was used to preserve the original fraud ratio in both datasets.
 
-## Feature Importance
+The test set remained completely untouched throughout training and tuning to prevent data leakage.
 
-A Random Forest was trained on the training set only to identify which features carry the strongest fraud signal. The top features by importance score were **V17 (0.172)**, V12 (0.137), and V14 (0.126). Distribution plots of V17 confirmed clear separation between fraud and non-fraud transactions, validating it as a genuinely discriminative feature.
+### 3. Feature Selection
 
-## Baseline Model
+Random Forest feature importance was used to identify the most predictive fraud indicators.
 
-A baseline Logistic Regression model was trained on the original imbalanced training data and evaluated on the original test set. This baseline achieved fraud precision of **0.8289**, fraud recall of **0.6429**, and fraud F1-score of **0.7241**, showing that it was conservative and precise but still missed a meaningful share of fraud cases.
+Top features included:
 
-This baseline established the main trade-off in the project: high precision helps reduce false positives, but lower recall means more missed fraud.
+* V17
+* V12
+* V14
+* V10
+* V16
 
-## Imbalance-Handling Strategies
+The top 10 features were selected for modeling.
 
-Three imbalance-handling strategies were tested during training: random undersampling, `class_weight='balanced'`, and SMOTE oversampling. In each case, only the training data was adjusted or reweighted, while the test set remained unchanged.
+### 4. Imbalance Handling Techniques
 
-### Random Undersampling
+The following approaches were compared:
 
-Random undersampling balanced the training set by keeping all fraud rows and randomly reducing the non-fraud class to the same size. This increased fraud recall to **0.9184**, but fraud precision dropped to **0.0366**, making the model impractical because it generated too many false positives.
+1. Baseline Logistic Regression
+2. Random Undersampling
+3. Class-Weighted Logistic Regression
+4. SMOTE + Logistic Regression
+5. SMOTE + Random Forest
+6. SMOTE + XGBoost
 
-### Class-Weighted Logistic Regression
+### 5. Hyperparameter Tuning
 
-Using `class_weight='balanced'` increased the penalty for fraud misclassification without altering the dataset itself. This produced fraud recall of **0.9184** and fraud precision of **0.0585**, which was slightly better than undersampling but still far too noisy for real use.
+Random Forest + SMOTE was tuned using:
 
-### SMOTE + Logistic Regression
+* GridSearchCV
+* Stratified K-Fold Cross Validation
+* Fraud-class F1-score as the optimization metric
 
-SMOTE balanced the training data by generating synthetic fraud examples based on nearby minority-class observations. With Logistic Regression, this improved the precision-recall trade-off compared with undersampling and class weighting, producing fraud precision of **0.1287**, recall of **0.8980**, and F1-score of **0.2251**.
+Results showed that the default Random Forest configuration was already near-optimal.
 
-## Tree-Based Models
+### 6. Threshold Tuning
 
-### Random Forest + SMOTE
+The fraud probability threshold was adjusted to study the Precision-Recall trade-off.
 
-Random Forest was trained on the SMOTE-balanced training data and evaluated on the original test set. This model achieved fraud precision of **0.8265**, fraud recall of **0.8265**, and fraud F1-score of **0.8265** — the best overall balance among all models tested.
+This demonstrates how businesses can choose between:
 
-Random Forest outperformed Logistic Regression because it can capture non-linear relationships and feature interactions more effectively, which is valuable in fraud detection where suspicious patterns are often complex.
+* Higher fraud detection (higher recall)
+* Lower investigation workload (higher precision)
 
-### XGBoost + SMOTE
+without retraining the model.
 
-XGBoost was also trained on the SMOTE-balanced training data. It achieved higher recall (**0.88**) than Random Forest but at the cost of much lower precision (**0.42**), resulting in a significantly higher false positive rate. Random Forest remained the stronger overall choice.
+---
 
-## Fraud-Class Results
+## Model Comparison
 
-| Model | Precision | Recall | F1-score |
-|---|---:|---:|---:|
-| Logistic Regression (imbalanced) | 0.8289 | 0.6429 | 0.7241 |
-| Logistic Regression + Undersampling | 0.0366 | 0.9184 | 0.0704 |
-| Logistic Regression + `class_weight='balanced'` | 0.0585 | 0.9184 | 0.1100 |
-| Logistic Regression + SMOTE | 0.1287 | 0.8980 | 0.2251 |
-| **Random Forest + SMOTE** | **0.8265** | **0.8265** | **0.8265** |
-| XGBoost + SMOTE | 0.42 | 0.88 | 0.57 |
+| Model                               | Precision |   Recall | F1 Score |
+| ----------------------------------- | --------: | -------: | -------: |
+| Baseline Logistic Regression        |      0.80 |     0.60 |     0.69 |
+| Logistic Regression + Undersampling |      0.04 |     0.93 |     0.08 |
+| Logistic Regression + Class Weights |      0.06 |     0.92 |     0.11 |
+| Logistic Regression + SMOTE         |      0.05 |     0.92 |     0.10 |
+| Random Forest + SMOTE               |  **0.71** | **0.83** | **0.76** |
+| XGBoost + SMOTE                     |      0.12 |     0.90 |     0.21 |
 
-## Hyperparameter Tuning
+---
 
-GridSearchCV with StratifiedKFold cross-validation was used to tune the Random Forest + SMOTE pipeline. The search optimised for fraud-class F1-score to ensure tuning stayed focused on the minority class. Tuning confirmed that the default configuration was already near-optimal — the tuned model scored **0.8163** F1 on the test set, confirming that the SMOTE + Random Forest strategy itself drives performance more than specific parameter values.
+## Best Model: Random Forest + SMOTE
 
-## Threshold Tuning
+Fraud-class metrics:
 
-The tuned Random Forest assigns each transaction a fraud probability between 0 and 1. Lowering the default threshold of 0.5 allows the model to flag more fraud at the cost of more false alarms.
+* Precision: 71.1%
+* Recall: 82.7%
+* F1-score: 76.4%
 
-At threshold **0.3**:
-- **Recall: 87.8%** — catches 86 out of 98 fraud cases
-- **Precision: 68.8%** — 39 legitimate transactions wrongly flagged
-- **F1-score: 0.7713**
+Confusion Matrix:
 
-This gives practitioners a lever to tune the precision-recall trade-off based on business priorities without retraining the model.
+|              | Predicted Legit | Predicted Fraud |
+| ------------ | --------------: | --------------: |
+| Actual Legit |          56,831 |              33 |
+| Actual Fraud |              17 |              81 |
 
-## PR Curve and ROC Curve
+Interpretation:
 
-- **AUC-PR: 0.8704** — the model maintains near-perfect precision up to ~55% recall before dropping, indicating high confidence in its earliest fraud predictions
-- **AUC-ROC: 0.9739** — confirms strong separation between fraud and legitimate transactions across all thresholds
+* Catches approximately 83% of fraud transactions
+* Maintains a relatively low false-positive count
+* Provides the best balance between fraud detection and investigator workload
 
-For an imbalanced dataset, AUC-PR is the more informative metric. Both scores being strong provides high confidence that RF + SMOTE is a genuinely effective model.
+---
 
-## Key Takeaways
+## Threshold Tuning Example
 
-- Accuracy is not a reliable primary metric for extremely imbalanced fraud data.
-- Fraud recall reflects how many actual fraud cases are caught; fraud precision reflects how many flagged cases are truly fraud.
-- Random undersampling can improve recall but creates excessive false positives by discarding most majority-class data.
-- Class weighting is simple and preserves all training data but may still produce many false alerts.
-- SMOTE provides a better training signal than undersampling by synthesising minority examples instead of discarding majority data.
-- Tree-based models such as Random Forest outperform linear models when fraud patterns depend on non-linear feature interactions.
-- Threshold tuning is a practical post-training tool that lets the business control the precision-recall trade-off without retraining.
+Using a lower threshold (0.3):
 
-## Conclusion
+| Metric    | Value |
+| --------- | ----: |
+| Precision | 53.2% |
+| Recall    | 85.7% |
+| F1-score  | 65.6% |
 
-This project shows that class-imbalance handling changes fraud-model behaviour much more meaningfully than raw accuracy suggests. The baseline Logistic Regression model was precise but missed more fraud, while undersampling and class weighting increased fraud capture at the cost of many false alarms.
+Confusion Matrix:
 
-Among all tested approaches, **Random Forest + SMOTE** delivered the best overall fraud-detection trade-off on the original imbalanced test set — strong precision, strong recall, and the highest fraud F1-score. Hyperparameter tuning confirmed this configuration was already near-optimal. Threshold tuning and AUC-PR/ROC curves provide additional tools for deploying and monitoring the model in a real-world setting.
+|              | Predicted Legit | Predicted Fraud |
+| ------------ | --------------: | --------------: |
+| Actual Legit |          56,790 |              74 |
+| Actual Fraud |              14 |              84 |
+
+Business implication:
+
+* More fraud is detected
+* More legitimate transactions are flagged
+* Useful when the cost of missed fraud exceeds the cost of investigations
+
+---
+
+## Precision-Recall and ROC Analysis
+
+### Precision-Recall Curve
+
+AUC-PR:
+
+0.8124
+
+The PR curve is especially important for fraud detection because it directly reflects the trade-off between fraud detection and false alarms.
+
+### ROC Curve
+
+AUC-ROC:
+
+0.9643
+
+The ROC curve shows that the model separates fraud and legitimate transactions extremely well across many thresholds.
+
+For highly imbalanced datasets, AUC-PR is generally the more informative metric.
+
+---
+
+## Key Findings
+
+* Accuracy is misleading for highly imbalanced datasets.
+* Recall and Precision are more meaningful fraud-detection metrics.
+* Random undersampling improves recall but creates excessive false positives.
+* Class weighting preserves data but still produces many false alarms.
+* SMOTE is generally more effective than undersampling because it generates synthetic minority examples instead of discarding majority-class data.
+* Random Forest outperformed Logistic Regression and XGBoost by achieving the strongest Precision-Recall balance.
+* Hyperparameter tuning produced only marginal improvements, indicating that the overall modeling strategy mattered more than specific parameter choices.
+* Threshold tuning provides a practical business lever for controlling fraud detection sensitivity.
+
+---
+
+## Business Takeaway
+
+In fraud detection, the cost of missing a fraudulent transaction is often significantly higher than the cost of investigating a false alarm.
+
+The Random Forest + SMOTE model achieved the strongest overall balance between fraud detection and operational efficiency. Additionally, threshold tuning demonstrated that the business can adjust fraud sensitivity without retraining the model, allowing investigation workload and fraud losses to be balanced according to business priorities.
+
+---
+
+## Future Improvements
+
+* Cost-sensitive learning
+* Advanced anomaly detection methods
+* Real-time fraud scoring pipeline
+* Ensemble model stacking
+* Model monitoring and drift detection
+
+---
+
+## License
+
+This project is released under the MIT License.
